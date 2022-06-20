@@ -11,10 +11,11 @@ def print_board(board):
 
 class Ship:
 
-    def __init__(self, ship_type, number, health):
+    def __init__(self, ship_type, number, health, sunk):
         self.ship_type = ship_type
         self.number = number
         self.health = health
+        self.sunk = sunk
 
     def place_ship(self, board):
 
@@ -35,6 +36,7 @@ class Ship:
 
         while overlap == True or index == True:
 
+            print_board(board)
             ship_start = input("Choose starting point of your " + self.ship_type + " " + self.number + "(E.G.:A4): ")
 
             ship_row = int(letter_to_number[ship_start[0]])
@@ -59,7 +61,10 @@ class Ship:
                     else:
                         index = True
                         print("Ship out of Map. Try again.")
-                        break
+                        for y in range(0, length):
+                            if 0 <= ship_row - y < 10 and 0 <= ship_col < 10:
+                                board[ship_row - y][ship_col] = '0'
+
                 elif ship_direction == 1:
                     if 0 <= ship_row < 10 and 0 <= (ship_col + k) < 10:
                         if board[ship_row][ship_col + k] != 'X':
@@ -73,7 +78,10 @@ class Ship:
                     else:
                         index = True
                         print("Ship out of Map. Try again.")
-                        break
+                        for y in range(0, length):
+                            if 0 <= ship_row < 10 and 0 <= ship_col + y < 10:
+                                board[ship_row][ship_col + y] = '0'
+
                 elif ship_direction == 2:
                     if 0 <= ship_row + k < 10 and 0 <= ship_col < 10:
                         if board[ship_row + k][ship_col] != 'X':
@@ -87,7 +95,10 @@ class Ship:
                     else:
                         index = True
                         print("Ship out of Map. Try again.")
-                        break
+                        for y in range(0, length):
+                            if 0 <= ship_row + y < 10 and 0 <= ship_col < 10:
+                                board[ship_row + y][ship_col] = '0'
+
 
                 elif ship_direction == 3:
                     if 0 <= ship_row < 10 and 0 <= (ship_col - k) < 10:
@@ -102,8 +113,9 @@ class Ship:
                     else:
                         index = True
                         print("Ship out of Map. Try again.")
-                        break
+                        for y in range(0, length):
+                            if 0 <= ship_row < 10 and 0 <= ship_col - y < 10:
+                                board[ship_row][ship_col - y] = '0'
 
                 else:
-
                     print("invalid")
