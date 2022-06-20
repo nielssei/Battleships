@@ -14,16 +14,16 @@ print("Place your Ships. You have 4 different types of ships:"
       "\n- Yacht. 2 units long. 3 available"
       "\n- Boat. 1 unit long. 4 available. \n")
 
-titanic_1 = Ship("Titanic", "1", 4)
-cruiser_1 = Ship("Cruiser", "1", 3)
-cruiser_2 = Ship("Cruiser", "2", 3)
-yacht_1 = Ship("Yacht", "1", 2)
-yacht_2 = Ship("Yacht", "2", 2)
-yacht_3 = Ship("Yacht", "3", 2)
-boat_1 = Ship("Boat", "1", 1)
-boat_2 = Ship("Boat", "2", 1)
-boat_3 = Ship("Boat", "3", 1)
-boat_4 = Ship("Boat", "4", 1)
+titanic_1 = Ship("Titanic", "1", 4, False)
+cruiser_1 = Ship("Cruiser", "1", 3, False)
+cruiser_2 = Ship("Cruiser", "2", 3, False)
+yacht_1 = Ship("Yacht", "1", 2, False)
+yacht_2 = Ship("Yacht", "2", 2, False)
+yacht_3 = Ship("Yacht", "3", 2, False)
+boat_1 = Ship("Boat", "1", 1, False)
+boat_2 = Ship("Boat", "2", 1, False)
+boat_3 = Ship("Boat", "3", 1, False)
+boat_4 = Ship("Boat", "4", 1, False)
 
 titanic_1.place_ship(created_board)
 cruiser_1.place_ship(created_board)
@@ -60,4 +60,5 @@ while tries < 10:
             print('\nNo ships hit... ' + str(10 - tries) + ' tries left\n')
     else:
         print('\nNUMBER(S) OUT OF RANGE. PLEASE TYPE A NUMBER BETWEEN 0 and 7\n')
+
 
