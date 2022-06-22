@@ -18,7 +18,7 @@ class Ship:
     def place_ship(self, board):
 
         letter_to_number = {'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5, 'G': 6, 'H': 7, 'I': 8, 'J': 9,
-                            'a': 0, 'b': 1, 'c': 2, 'd': 3, 'e': 4, 'f' :5, 'g': 6, 'h': 7, 'i': 8, 'j': 9}
+                            'a': 0, 'b': 1, 'c': 2, 'd': 3, 'e': 4, 'f': 5, 'g': 6, 'h': 7, 'i': 8, 'j': 9}
         health_to_type= {4: 'Titanic', 3: 'Cruiser', 2: 'Yacht', 1: 'Boat'}
 
         overlap = True
@@ -27,14 +27,38 @@ class Ship:
         while overlap == True or index == True:
 
             print_board(board)
-            ship_start = input("Choose starting point of your " + health_to_type[self.health] + " " + self.number + "(e.g.:A4): ")
+            passed = False
+            while not passed:
+                ship_start = input("Choose starting point of your "
+                                   + health_to_type[self.health] + " " + self.number + "(e.g.:A4): ")
+                if len(ship_start) == 2:
+                    if (ship_start[0] in letter_to_number.keys()) and (int(ship_start[1]) in letter_to_number.values()):
+                        passed = True
+                    else:
+                        print("Input was not correct. Please insert like this : ``A9``")
+                else:
+                    print("Input was not correct. Please insert like this : `A9`")
+
+
 
             ship_row = int(letter_to_number[ship_start[0]])
             ship_col = int(ship_start[1])
 
             direction_to_number = {'n': 0, 'e': 1, 's': 2, 'w': 3, 'N': 0, 'E': 1, 'S': 2, 'W': 3}
+            passed = False
             if self.health > 1:
-                ship_direction = int(direction_to_number[input("Choose a Direction for your Ship. (N: North, E: East, S: South, W: West): ")])
+                while not passed:
+                    ship_direction = input(
+                        "Choose a Direction for your Ship. (N: North, E: East, S: South, W: West): ")
+                    if len(ship_direction) == 1:
+                        if ship_direction[0] in direction_to_number.keys():
+                            ship_direction = direction_to_number[ship_direction]
+                            passed = True
+                        else:
+                            print("Please insert a valid direction")
+                    else:
+                        print("Please insert a valid direction")
+
             else:
                 ship_direction = 3
 
@@ -46,14 +70,14 @@ class Ship:
                             overlap = False
                             index = False
                         else:
-                            print("Ship Overlapping! Try again.")
+                            print("\n Ship Overlapping! Try again.")
                             for j in range(0, k):
                                 board[ship_row - j][ship_col] = 0
                             overlap = True
                             break
                     else:
                         index = True
-                        print("Ship out of Map. Try again.")
+                        print("\n Ship out of Map. Try again.")
                         for y in range(0, self.health):
                             if 0 <= ship_row - y < 10 and 0 <= ship_col < 10:
                                 board[ship_row - y][ship_col] = 0
@@ -65,14 +89,14 @@ class Ship:
                             overlap = False
                             index = False
                         else:
-                            print("Ship Overlapping! Try again.")
+                            print("\n Ship Overlapping! Try again.")
                             for j in range (0, k):
                                 board[ship_row][ship_col + j] = 0
                             overlap = True
                             break
                     else:
                         index = True
-                        print("Ship out of Map. Try again.")
+                        print("\n Ship out of Map. Try again.")
                         for y in range(0, self.health):
                             if 0 <= ship_row < 10 and 0 <= ship_col + y < 10:
                                 board[ship_row][ship_col + y] = 0
@@ -84,14 +108,14 @@ class Ship:
                             overlap = False
                             index = False
                         else:
-                            print("Ship Overlapping! Try again.")
+                            print("\n Ship Overlapping! Try again.")
                             for j in range (0, k):
                                 board[ship_row + j][ship_col] = 0
                             overlap = True
                             break
                     else:
                         index = True
-                        print("Ship out of Map. Try again.")
+                        print("\n Ship out of Map. Try again.")
                         for y in range(0, self.health):
                             if 0 <= ship_row + y < 10 and 0 <= ship_col < 10:
                                 board[ship_row + y][ship_col] = 0
@@ -104,14 +128,14 @@ class Ship:
                             overlap = False
                             index = False
                         else:
-                            print("Ship Overlapping! Try again.")
+                            print("\n Ship Overlapping! Try again.")
                             for j in range (0, k):
                                 board[ship_row][ship_col - j] = 0
                             overlap = True
                             break
                     else:
                         index = True
-                        print("Ship out of Map. Try again.")
+                        print("\n Ship out of Map. Try again.")
                         for y in range(0, self.health):
                             if 0 <= ship_row < 10 and 0 <= ship_col - y < 10:
                                 board[ship_row][ship_col - y] = 0
