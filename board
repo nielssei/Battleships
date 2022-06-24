@@ -1,0 +1,95 @@
+from ship import Ship
+
+class Board:
+
+    def __init__(self, rows, cols):
+        self.rows = rows
+        self.cols = cols
+
+        # init. ship liste
+        self.ships = []
+
+        # setzt alle auf in 2d list auf 0
+        self.board = [([0] * cols) for i in range(rows)]
+
+    def print_board(self):
+        num_to_x = {1: 'X', 2: 'X', 3: 'X', 4: 'X', 0: '0', 5: 'X', 'X': 'X',
+                    6: 'X', 7: 'X', 8: 'X', 9: 'X', 10: 'X', '-': '-'}
+        # zeigt gewähltes board an
+        print("   " + " ".join((str(k + 1)) for k in range(self.rows)))
+        row_index = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
+        for i in range(self.rows):
+            line = row_index[i] + " |"
+            for j in range(self.cols):
+                line += str(num_to_x[self.board[i][j]])
+                line += "|"
+            print(line)
+
+    def attack_ship(self, row, col, guess_board):
+        status = self.board[row][col]
+        if status == 0:
+            # miss
+            self.board[row][col] = 2
+            guess_board[row][col] = '-'
+            result = f"({row},{col}) -> Miss"
+        elif status == 1:
+            # hit
+            self.board[row][col] = 3
+            guess_board[row][col] = 'X'
+
+            # get the ship that was bombed
+            bombedShip = ()
+            for ship in self.ships:
+                for i in ship.coordinates:
+                    if i == (row, col):
+                        bombedShip = ship
+
+            # check if ship was destroyed
+            if self.destroyed_ship(bombedShip):
+                # remove from ship list
+                self.ships.remove(bombedShip)
+
+                if self.game_over():
+                    result = f"({row},{col}) -> Destroyed, game over"
+                else:
+                    result = f"({row},{col}) -> Destroyed"
+            else:
+                result = f"({row},{col}) -> Hit"
+
+        else:
+            result = f"({row + 1},{col + 1}) -> Bombed already"
+
+        print(result)
+
+        return result
+
+    def destroyed_ship(self, ship: Ship):
+        for i in range(ship.size):
+            if self.board[ship.coordinates[i][0]][ship.coordinates[i][1]] == 1:
+                # at least one ship part not hit -> not destroyed
+                return False
+        # if we reach this all parts were hit -> destroyed
+        return True
+
+
+    def game_over(self):
+        if len(self.ships) == 0:
+            return True
+
+    def place_ship(self, ship: Ship):
+
+        # gibt false aus wenn es überlappungen gibt
+        for i in range(ship.size):
+            if self.board[ship.coordinates[i][0]][ship.coordinates[i][1]] == 1:
+                return False
+
+        # gibt false aus wenn koordinaten außerhalb des spielfelds sind
+        for j in range(ship.size):
+            if not 0 <= self.board[ship.coordinates[j][0]][ship.coordinates[j][1]] < self.rows:
+                return False
+
+        for k in range(ship.size):
+            self.board[ship.coordinates[k][0]][ship.coordinates[k][1]] = 1
+
+        self.ships.append(ship)
+        return True
