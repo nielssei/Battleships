@@ -1,13 +1,37 @@
-from battleship_setup import *
+import socket
+import sys
 
-letter_to_number = {'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5, 'G': 6, 'H': 7, 'I': 8, 'J': 9,
-                    'a': 0, 'b': 1, 'c': 2, 'd': 3, 'e': 4, 'f': 5, 'g': 6, 'h': 7, 'i': 8, 'j': 9}
+from board import Board
+from ship import Ship
 
-row_index = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
-tries = 0
+guess_board = Board(10, 10)
+created_board = Board(10, 10)
+letter_to_num = {'A': 1, 'B': 2, 'C': 3, 'D': 4, 'E': 5, 'F': 6, 'G': 7, 'H': 8, 'I': 9, 'J': 10,
+                 'a': 1, 'b': 2, 'c': 3, 'd': 4, 'e': 5, 'f': 6, 'g': 7, 'h': 8, 'i': 9, 'j': 10}
 
-guess_board = [[0] * 10 for x in range(10)]
-created_board = [[0] * 10 for y in range(10)]
+
+def coordinates_ships(board, health, name, number):
+    dir_to_num = {'n': 0, 'e': 1, 's': 2, 'w': 3,
+                  'N': 0, 'E': 1, 'S': 2, 'W': 3}
+
+    position = input("Please type a coordinate for your " + name + " " + str(number) + ", for example A4: ")
+    if health > 1:
+        direction = input("Type a direction. (N: North, E: East, S: South, W: West): ")
+    else:
+        direction = 'S'
+    any_ship = Ship((letter_to_num[position[0]] - 1, int(position[1]) - 1), dir_to_num[direction], health)
+    if board.place_ship(any_ship) is True:
+        board.place_ship(any_ship)
+    else:
+        print("Invalid coordinate(Overlap/Out of Map)")
+        exit(1)
+    board.print_board()
+
+
+def coordinates_att():
+    guess_board.print_board()
+    attack_coordinates = input("Please enter a Coordinate you want to attack. (For Example: C4):")
+    created_board.attack_ship(letter_to_num[attack_coordinates[0]], int(attack_coordinates[1]), guess_board)
 
 print("Place your Ships. You have 4 different types of ships:"
       "\n"
@@ -16,49 +40,21 @@ print("Place your Ships. You have 4 different types of ships:"
       "\n- Yacht. 2 units long. 3 available"
       "\n- Boat. 1 unit long. 4 available. \n")
 
-titanic_1 = Ship("1", 4, False)
-cruiser_1 = Ship("2", 3, False)
-cruiser_2 = Ship("3", 3, False)
-yacht_1 = Ship("4", 2, False)
-yacht_2 = Ship("5", 2, False)
-yacht_3 = Ship("6", 2, False)
-boat_1 = Ship("7", 1, False)
-boat_2 = Ship("8", 1, False)
-boat_3 = Ship("9", 1, False)
-boat_4 = Ship("10", 1, False)
+created_board.print_board()
 
-titanic_1.place_ship(created_board)
-cruiser_1.place_ship(created_board)
-cruiser_2.place_ship(created_board)
-yacht_1.place_ship(created_board)
-yacht_2.place_ship(created_board)
-yacht_3.place_ship(created_board)
-boat_1.place_ship(created_board)
-boat_2.place_ship(created_board)
-boat_3.place_ship(created_board)
-boat_4.place_ship(created_board)
+coordinates_ships(created_board, 4, "Titanic", 1)
+coordinates_ships(created_board, 3, "Cruiser", 1)
+coordinates_ships(created_board, 3, "Cruiser", 2)
+coordinates_ships(created_board, 2, "Yacht", 1)
+coordinates_ships(created_board, 2, "Yacht", 2)
+coordinates_ships(created_board, 2, "Yacht", 3)
+coordinates_ships(created_board, 1, "Boat", 1)
+coordinates_ships(created_board, 1, "Boat", 2)
+coordinates_ships(created_board, 1, "Boat", 3)
+coordinates_ships(created_board, 1, "Boat", 4)
 
-print_board(created_board)
+print("This is your final Board.\n")
+print("Let's start guessing your Opponents Ships.")
 
-print("This is your final board.")
-print("\nLet's start guessing your Opponents ships. You have 10 tries.")
-while tries < 10:
-    print_board(guess_board)
-
-    locationInput = input("Enter a Location (e.g. A3): ")
-
-    rowInput = int(letter_to_number[locationInput[0]])
-    colInput = int(locationInput[1])
-
-    if 0 <= colInput < 10 and 0 <= rowInput < 10:
-        if created_board[rowInput][colInput] == 'X':
-            guess_board[rowInput][colInput] = 'X'
-            tries += 1
-            print('\nYou hit a ship! ' + str(10 - tries) + ' tries left\n')
-
-        else:
-            guess_board[rowInput][colInput] = '-'
-            tries += 1
-            print('\nNo ships hit... ' + str(10 - tries) + ' tries left\n')
-    else:
-        print('\nNUMBER(S) OUT OF RANGE. PLEASE TYPE A NUMBER BETWEEN 0 and 9\n')
+while not created_board.game_over():
+    coordinates_att()
