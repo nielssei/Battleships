@@ -96,12 +96,14 @@ def place_ships(board, health, name, number):
 
 # handles incoming game move
 def handleIncomingMove():
-    print(f"Waiting for {remoteName}")
 
+    print(f"Waiting for {remoteName}")
+    letter_to_num = {'A': 1, 'B': 2, 'C': 3, 'D': 4, 'E': 5, 'F': 6, 'G': 7, 'H': 8, 'I': 9, 'J': 10,
+                     'a': 1, 'b': 2, 'c': 3, 'd': 4, 'e': 5, 'f': 6, 'g': 7, 'h': 8, 'i': 9, 'j': 10}
     # receive and process remote bomb
     bomb = server.receive()
     bombCoordinates = bomb.split(",")
-    result = board.bomb(int(bombCoordinates[0]) - 1, int(bombCoordinates[1]) - 1)
+    result = board.bomb(letter_to_num[bombCoordinates[0]] - 1, int(bombCoordinates[1]) - 1)
 
     # send replies to remote player
     client.send(result)
@@ -115,8 +117,11 @@ def handleIncomingMove():
 
 # handles outgoing game move
 def handleOutgoingMove():
+    letter_to_num = {'A': 1, 'B': 2, 'C': 3, 'D': 4, 'E': 5, 'F': 6, 'G': 7, 'H': 8, 'I': 9, 'J': 10,
+                     'a': 1, 'b': 2, 'c': 3, 'd': 4, 'e': 5, 'f': 6, 'g': 7, 'h': 8, 'i': 9, 'j': 10}
     # send bomb to remote player
-    bomb = input("Send bomb (e.G.): ")
+    bomb_ = letter_to_num[input("Send bomb (e.G. A4): ")]
+    bomb = bomb_.split(",")
     # TODO: validate the input
     client.send(bomb)
 
