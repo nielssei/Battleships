@@ -100,7 +100,8 @@ class Board:
 
     # Generiert Spielfeld-Infos
     def info(self):
-        info = " ".join(str(i) for i in range(1, self.cols + 1))
+        row_index = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
+        info ="  " + " ".join(str(i) for i in range(1, self.cols + 1))
         for r in range(self.rows):
             row = row_index[r] + " "
             for c in range(self.cols):
