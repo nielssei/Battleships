@@ -51,7 +51,7 @@ class Board:
         if status == EMPTY:
             # Vorbei am Schiff
             self.board[row][col] = MISS
-            result = str(num_to_letter[int(row) + 1] + (col + 1)) + " -> Miss"
+            result = num_to_letter[int(row) + 1] + str(col + 1) + " -> Miss"
         elif status == SHIP:
             # Schiff getroffen
             self.board[row][col] = HIT
@@ -70,14 +70,14 @@ class Board:
                 # Ob alle Schiffe zerstört sind, ein Schiff zerstört wurde oder ein einfacher Treffer gelandet wurde
                 # Nachricht ausgeben
                 if self.game_over():
-                    result = str(num_to_letter[int(row) + 1] + (col + 1)) + " -> Destroyed, Game Over"
+                    result = num_to_letter[int(row) + 1] + str(col + 1) + " -> Destroyed, Game Over"
                 else:
-                    result = str(num_to_letter[int(row) + 1] + (col + 1)) + " -> Destroyed"
+                    result = " -> Destroyed"
             else:
-                result = str(num_to_letter[int(row) + 1] + (col + 1)) + " -> Hit"
+                result = num_to_letter[int(row) + 1] + str(col + 1) + " -> Hit"
         # Falls Koordinate bereits angegriffen wurde
         else:
-            result = str(num_to_letter[int(row) + 1] + (col + 1)) + " -> Already bombed"
+            result = num_to_letter[int(row) + 1] + str(col + 1) + " -> Already bombed"
 
         print(result)
 
@@ -125,4 +125,3 @@ class Board:
                 line += str(self.board[i][j])
                 line += " "
             print(line)
-
