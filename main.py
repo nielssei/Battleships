@@ -157,6 +157,15 @@ if __name__ == '__main__':
     board = Board(10, 10)
 
     if first_deployment:
+        print("Place your Ships. You have 4 different types of ships:"
+              "\n"
+              "\n- Titanic. 4 units long. 1 available."
+              "\n- Cruiser. 3 units long. 2 available."
+              "\n- Yacht. 2 units long. 3 available"
+              "\n- Boat. 1 unit long. 4 available. \n")
+
+        time.sleep(5)
+        system("Clear")
         # Platziert die verschiedenen Schiffe mithilfe einer Abfrage vom User
         place_ships(board, 4, "Titanic", 1)
         place_ships(board, 3, "Cruiser", 1)
@@ -192,8 +201,16 @@ if __name__ == '__main__':
             handle_outgoing_move()
 
     else:
-        # "Spieler 2" Konfiguration Schiffe
+        print("Place your Ships. You have 4 different types of ships:"
+              "\n"
+              "\n- Titanic. 4 units long. 1 available."
+              "\n- Cruiser. 3 units long. 2 available."
+              "\n- Yacht. 2 units long. 3 available"
+              "\n- Boat. 1 unit long. 4 available. \n")
 
+        time.sleep(5)
+        system("Clear")
+        # "Spieler 2" Konfiguration Schiffe
         place_ships(board, 4, "Titanic", 1)
         place_ships(board, 3, "Cruiser", 1)
         place_ships(board, 3, "Cruiser", 2)
