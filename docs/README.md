@@ -41,7 +41,7 @@ Unsere Anwendung enthält insgesamt drei Python-Dateien: eine `main.py`, `board.
 Eine der wichtigsten Bestandteile dieser Anwendung ist die Interprozesskommunikation, denn nur durch diese ist es möglich,
 eine Verbindung zwischen zwei Spielern zu erstellen und diese gegeneinander spielen lassen zu können. Dies wurde in der 
 Main mit Hilfe von Sockets gelöst. Sockets ermöglichen die Interprozesskommunikation in verteilten Systemen. Hierbei kann
-ein Benutzerprozess einen Socket vom Betriebssystem anfordern,  mit dem er dann Daten - wie beispielsweise die Bomben in
+ein Benutzerprozess ein Socket vom Betriebssystem anfordern,  mit dem er dann Daten - wie beispielsweise die Bomben in
 unserem Spiel - verschicken und empfangen kann.
 
 Es werden hierfür zwei Prozesse benötigt - ein Client- und ein Server-Prozess. Deshalb haben wir auch eine Client-
