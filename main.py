@@ -19,18 +19,18 @@ class Server:
         self.context = context
 
     def receive(self):
-        # create new socket
+        # Socket wird erstellt
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.bind((str(self.context.ip), int(self.context.port)))
         self.socket.listen()
 
         (conn, addr) = self.socket.accept()
 
-        # receive message
+        # Nachricht über Socket erhalten
         data = conn.recv(500)
         message = data.decode()
 
-        # send reply
+        # Antwort
         conn.sendall(f"ack {message}".encode())
 
         conn.close()
@@ -47,119 +47,116 @@ class Client:
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.connect(self.remote)
 
-        # handle initial connection -> send this server's ip and address for auto-connect
+        # Verbindung erstellen
         if message.startswith("init"):
             message = message + " " + self.context.name + " " + self.socket.getsockname()[0] + " " + self.context.port
 
         self.socket.sendall(message.encode())
 
-        # receive send reply, not used at the moment
-        data = self.socket.recv(500)
-        #message = data.decode()
-        #print(f"Received: {message}")
-
         self.socket.close()
 
-    # send initial connection request
-    def init(self, remoteIp, remotePort):
+    # Schickt Anfrage zur Verbindung
+    def init(self, remote_ip, remote_port):
         try:
-            print(f"Connecting to {remoteIp}:{remotePort}")
-            self.remote = (remoteIp, remotePort)
+            print(f"Connecting to {remote_ip}:{remote_port}")
+            self.remote = (remote_ip, remote_port)
             self.send("init")
             print(f"{self.context.name} ready")
         except socket.error as error:
             print(error)
 
 def place_ships(board, health, name, number):
+    # Nimmt Input vom User, um Schiffe zu platzieren
     dir_to_num = {'n': 0, 'e': 1, 's': 2, 'w': 3,
                   'N': 0, 'E': 1, 'S': 2, 'W': 3}
     letter_to_num = {'A': 1, 'B': 2, 'C': 3, 'D': 4, 'E': 5, 'F': 6, 'G': 7, 'H': 8, 'I': 9, 'J': 10,
                      'a': 1, 'b': 2, 'c': 3, 'd': 4, 'e': 5, 'f': 6, 'g': 7, 'h': 8, 'i': 9, 'j': 10}
     system("Clear")
     position = input("Please type a coordinate for your " + name + " " + str(number) + ", for example A4: ")
+    # Falls es sich um ein 1-Feld-Schiff handelt, ist die Richtung egal
     if health > 1:
         direction = input("Type a direction. (N: North, E: East, S: South, W: West): ")
     else:
         direction = 'S'
-
+    # Koordinaten werden hinzugefügt und Schiff wird platziert, wenn alle Bedingungen aus add_ship zutreffen
     any_ship = Ship((letter_to_num[position[0]] - 1, int(position[1]) - 1), dir_to_num[direction], health)
-    if board.addShip(any_ship) is True:
-        board.addShip(any_ship)
+    if board.add_ship(any_ship) is True:
+        board.add_ship(any_ship)
     else:
         print("Invalid coordinate(Overlap/Out of Map)")
         exit(1)
 
-    board.displayDebug()
+    board.display_all()
     time.sleep(2)
 
 
-# handles incoming game move
-def handleIncomingMove():
+# Methode, um mit eingehenden Angriffen umzugehen
+def handle_incoming_move():
 
-    print(f"Waiting for {remoteName}")
-    # receive and process remote bomb
+    print(f"Waiting for {remote_name}")
+    # Eingehenden Angriff verarbeiten, auswerten
     bomb = server.receive()
-    bombCoordinates = bomb.split(",")
-    result = board.bomb(int(bombCoordinates[0]) - 1, int(bombCoordinates[1]) - 1)
+    bomb_coordinates = bomb.split(",")
+    result = board.bomb(int(bomb_coordinates[0]) - 1, int(bomb_coordinates[1]) - 1)
 
-    # send replies to remote player
+    # Antwort mit entsprechendem Ergebnis des Angriffs wird zurückgeschickt
     client.send(result)
     client.send(board.info())
 
-    # stop if the game is over
-    if board.isGameOver():
+    # Falls "Game Over" ist, wird eine Nachricht ausgegeben und das Spiel beendet
+    if board.game_over():
         print("Game over, you lose :-(")
         sys.exit()
 
 
-# handles outgoing game move
-def handleOutgoingMove():
+# Methode, um Angriffe zu senden
+def handle_outgoing_move():
     letter_to_num = {'A': '1', 'B': '2', 'C': '3', 'D': '4', 'E': '5', 'F': '6', 'G': '7', 'H': '8', 'I': '9', 'J': '10',
                      'a': '1', 'b': '2', 'c': '3', 'd': '4', 'e': '5', 'f': '6', 'g': '7', 'h': '8', 'i': '9', 'j': '10'}
-    # send bomb to remote player
+    # Anzugreifende Koordinate wird eingegeben
     bomb_ = input("Send bomb (e.G. A4): ")
-    bomb = (letter_to_num[bomb_[0]] + "," + bomb_[1])
-    # TODO: validate the input
-    client.send(bomb)
+    # Es wird überprüft, ob sie auf dem Spielfeld ist, wenn ja, wird sie formatiert und gesendet
+    if 0 <= int(letter_to_num[bomb_[0]]) < 10 and 0 <= int(bomb_[1]) < 10:
+        bomb = (letter_to_num[bomb_[0]] + "," + bomb_[1])
+        client.send(bomb)
+    else:
+        print("Invalid Coordinate (OUT OF MAP)")
 
-    # receive and print replies from remote
+    # Angriffskoordinaten des Gegners erhalten und Ergebnis ausgeben
     result = server.receive()
     print(result)
-    boardInfo = server.receive()
-    print(boardInfo)
+    board_info = server.receive()
+    print(board_info)
 
-    # stop if the game is over
+    # Exit, falls Spiel vorbei ist
     if "over" in result:
         print("Game over, you win!")
         sys.exit()
 
 
 if __name__ == '__main__':
-    # get app config
-    # TODO: validate input arguments
-    ip = "localhost"  # local host (or ip address)
-    name = sys.argv[1]  # player name
-    port = sys.argv[2]  # port
+    # Sockets werden konfiguriert und teilweise über Terminaleingabe festgelegt
+    ip = "localhost"  # localhost / gewünschte IP
+    name = sys.argv[1]  # Spielername
+    port = sys.argv[2]  # Port
     if len(sys.argv) == 3:
-        # first deployment, no remote connection info specified
-        firstDeployment = True
+        # Wenn es sich um "Spieler 1" handelt, sprich first deployment
+        first_deployment = True
     else:
-        # second deployment
-        firstDeployment = False
+        # "Spieler 2", sprich second deployment
+        first_deployment = False
 
-        # get remote connection info (ip address and port to connect to)
-        remoteIp = sys.argv[3]
-        remotePort = int(sys.argv[4])
+        # Wenn "Spieler 2" sich verbindet, muss er IP und Port des Gegners eingeben
+        remote_ip = sys.argv[3]
+        remote_port = int(sys.argv[4])
 
     context = Context(ip, port, name)
 
-    # initialize board
+    # Spielfeld wird initialisiert
     print(f"Initialize board for {name}")
     board = Board(10, 10)
 
-    if firstDeployment:
-        # first deployment
-
+    if first_deployment:
         # Platziert die verschiedenen Schiffe mithilfe einer Abfrage vom User
         place_ships(board, 4, "Titanic", 1)
         place_ships(board, 3, "Cruiser", 1)
@@ -172,32 +169,31 @@ if __name__ == '__main__':
         place_ships(board, 1, "Boat", 3)
         place_ships(board, 1, "Boat", 4)
 
-        # initialize server
+        # Server wird initialisiert
         server = Server(context)
 
-        # wait for and handle initial incoming connection
+        # Auf Gegner warten / sich verbinden
         print(f"Waiting for player on {ip}:{port}")
         init = server.receive().split()
-        remoteName = init[1]
-        remoteIp = init[2]
-        remotePort = int(init[3])
-        print(f"{remoteName} connected")
+        remote_name = init[1]
+        remote_ip = init[2]
+        remote_port = int(init[3])
+        print(f"{remote_name} connected")
 
-        # trigger initial outgoing connection
+        # Verbindung wird getriggert
         client = Client(context)
-        client.init(remoteIp, remotePort)
+        client.init(remote_ip, remote_port)
 
         print("Starting game")
 
-        # game loop
+        # Game Loop, Spieler spielen abwechselnd
         while True:
-            handleIncomingMove()
-            handleOutgoingMove()
+            handle_incoming_move()
+            handle_outgoing_move()
 
     else:
-        # second deployment
+        # "Spieler 2" Konfiguration Schiffe
 
-        # TODO: get the ships from command line or config file and move after the board initialization
         place_ships(board, 4, "Titanic", 1)
         place_ships(board, 3, "Cruiser", 1)
         place_ships(board, 3, "Cruiser", 2)
@@ -209,22 +205,23 @@ if __name__ == '__main__':
         place_ships(board, 1, "Boat", 3)
         place_ships(board, 1, "Boat", 4)
 
-        # trigger initial outgoing connection
+        # Verbindung wird getriggert
         client = Client(context)
-        client.init(remoteIp, remotePort)
+        client.init(remote_ip, remote_port)
 
-        # initialize server
+        # Server wird initialisiert
         server = Server(context)
 
-        # wait for and handle initial incoming connection
+        # Auf Verbindung warten / sich verbinden
         print(f"Waiting for player on {ip}:{port}")
         init = server.receive().split()
-        remoteName = init[1]
-        print(f"{remoteName} connected")
+        remote_name = init[1]
+        print(f"{remote_name} connected")
 
         print("Starting game")
 
-        # game loop
+        # Game Loop, Spieler spielen abwechselnd
         while True:
-            handleOutgoingMove()
-            handleIncomingMove()
+            handle_outgoing_move()
+            handle_incoming_move()
+
