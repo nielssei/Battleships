@@ -34,6 +34,27 @@ das Spiel zu spielen.
 
 ## Aufbau
 
+Unsere Anwendung enthält insgesamt drei Python-Dateien: eine `main.py`, `board.py` und `ship.py`.
+
+### Main.py
+
+Eine der wichtigsten Bestandteile dieser Anwendung ist die Interprozesskommunikation, denn nur durch diese ist es möglich,
+eine Verbindung zwischen zwei Spielern zu erstellen und diese gegeneinander spielen lassen zu können. Dies wurde in der 
+Main mit Hilfe von Sockets gelöst. Sockets ermöglichen die Interprozesskommunikation in verteilten Systemen. Hierbei kann
+ein Benutzerprozess einen Socket vom Betriebssystem anfordern,  mit dem er dann Daten - wie beispielsweise die Bomben in
+unserem Spiel - verschicken und empfangen kann.
+
+Es werden hierfür zwei Prozesse benötigt - ein Client- und ein Server-Prozess. Deshalb haben wir auch eine Client-
+und eine Server-Klasse erstellt.
+
+Hiermit wird zum Beispiel ein Server-Socket erstellt, an einen Port gebunden, empfangsbereit gemacht und die
+Verbindungsanforderung akzeptiert (Zeile 23-27):
+
+    self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.socket.bind((str(self.context.ip), int(self.context.port)))
+        self.socket.listen()
+
+        (conn, addr) = self.socket.accept()
 
 
 
