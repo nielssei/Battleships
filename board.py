@@ -22,7 +22,7 @@ class Board:
         self.board = [([EMPTY] * cols) for _ in range(rows)]
 
     # Platziert neues Schiff auf dem Spielfeld
-    def addShip(self, ship: Ship):
+    def add_ship(self, ship: Ship):
         # Ist die Koordinate schon von einem Schiff besetzt? Wenn ja, gib False aus (Schiff wird nicht platziert)
         for i in range(ship.size):
             if self.board[ship.coordinates[i][0]][ship.coordinates[i][1]] == SHIP:
@@ -43,54 +43,55 @@ class Board:
         # Gib True aus, wenn alles platziert wurde und geklappt hat.
         return True
 
-
     # Attackiert beliebige Koordinate
     def bomb(self, row, col):
+        num_to_letter = {1: 'A', 2: 'B', 3: 'C', 4: 'D', 5: 'E',
+                         6: 'F', 7: 'G', 8: 'H', 9: 'I', 10: 'J'}
         status = self.board[row][col]
         if status == EMPTY:
             # Vorbei am Schiff
             self.board[row][col] = MISS
-            result = f"({row + 1},{col + 1}) -> Miss"
+            result = str(num_to_letter[int(row) + 1] + (col + 1)) + " -> Miss"
         elif status == SHIP:
             # Schiff getroffen
             self.board[row][col] = HIT
 
             # Getroffenes Schiff ausfindig machen
-            bombedShip = ()
+            bombed_ship = ()
             for ship in self.ships:
                 for i in ship.coordinates:
                     if i == (row, col):
-                        bombedShip = ship
+                        bombed_ship = ship
 
             # Überprüfung, ob Schiff bereits zerstört wurde
-            if self.isShipDestroyed(bombedShip):
+            if self.ship_destroyed(bombed_ship):
                 # Falls ja, wird das Schiff von der Liste entfernt
-                self.ships.remove(bombedShip)
+                self.ships.remove(bombed_ship)
                 # Ob alle Schiffe zerstört sind, ein Schiff zerstört wurde oder ein einfacher Treffer gelandet wurde
                 # Nachricht ausgeben
-                if self.isGameOver():
-                    result = f"({row + 1},{col + 1}) -> Destroyed, game over"
+                if self.game_over():
+                    result = str(num_to_letter[int(row) + 1] + (col + 1)) + " -> Destroyed, Game Over"
                 else:
-                    result = f"({row + 1},{col + 1}) -> Destroyed"
+                    result = str(num_to_letter[int(row) + 1] + (col + 1)) + " -> Destroyed"
             else:
-                result = f"({row + 1},{col + 1}) -> Hit"
+                result = str(num_to_letter[int(row) + 1] + (col + 1)) + " -> Hit"
         # Falls Koordinate bereits angegriffen wurde
         else:
-            result = f"({row + 1},{col + 1}) -> Bombed already"
+            result = str(num_to_letter[int(row) + 1] + (col + 1)) + " -> Already bombed"
 
         print(result)
 
         return result
 
     # Methode, die überprüft, ob Schiff zerstört ist
-    def isShipDestroyed(self, ship: Ship):
+    def ship_destroyed(self, ship: Ship):
         for i in range(ship.size):
             if self.board[ship.coordinates[i][0]][ship.coordinates[i][1]] == SHIP:
                 return False
         return True
 
-    # Methode, die überprüft ob es noch Schiffe gibt
-    def isGameOver(self):
+    # Methode, die überprüft, ob es noch Schiffe gibt
+    def game_over(self):
         # Gibt True aus, wenn Liste der Schiffe leer aus, ansonsten False
         return not self.ships
 
@@ -101,12 +102,12 @@ class Board:
     # Generiert Spielfeld-Infos
     def info(self):
         row_index = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
-        info ="  " + " ".join(str(i) for i in range(1, self.cols + 1))
+        info = "  " + " ".join(str(i) for i in range(1, self.cols + 1))
         for r in range(self.rows):
             row = row_index[r] + " "
             for c in range(self.cols):
                 if self.board[r][c] == HIT:
-                    row += ' '
+                    row += 'X '
                 elif self.board[r][c] == MISS:
                     row += 'o '
                 else:
@@ -115,7 +116,7 @@ class Board:
         return info
 
     # Zeigt Koordinaten an mit allem (für Platzierung, nicht verdeckt)
-    def displayDebug(self):
+    def display_all(self):
         row_index = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
         print("  " + " ".join(str(i) for i in range(1, self.cols + 1)))
         for i in range(self.rows):
@@ -124,3 +125,4 @@ class Board:
                 line += str(self.board[i][j])
                 line += " "
             print(line)
+
