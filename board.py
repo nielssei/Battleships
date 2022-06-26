@@ -72,7 +72,7 @@ class Board:
                 if self.game_over():
                     result = num_to_letter[int(row) + 1] + str(col + 1) + " -> Destroyed, Game Over"
                 else:
-                    result = " -> Destroyed"
+                    result = num_to_letter[int(row) + 1] + str(col + 1) + " -> Destroyed"
             else:
                 result = num_to_letter[int(row) + 1] + str(col + 1) + " -> Hit"
         # Falls Koordinate bereits angegriffen wurde
