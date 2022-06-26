@@ -1,5 +1,4 @@
 from ship import Ship
-import random
 
 # Variablen die für den jeweiligen Status des Schiffs stehen
 EMPTY = 0
