@@ -129,7 +129,7 @@ def handle_outgoing_move():
     print(board_info)
 
     # Exit, falls Spiel vorbei ist
-    if "over" in result:
+    if "Over" in result:
         print("Game over, you win!")
         sys.exit()
 
