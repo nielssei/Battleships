@@ -197,3 +197,9 @@ https://www.youtube.com/watch?v=rfscVS0vtbw&t=14234s
 
 https://www.w3schools.com/python/default.asp
 
+https://www.youtube.com/watch?v=C7CpfL1p6y0&t=380s
+
+https://www.youtube.com/watch?v=uagKTbohimU
+
+
+
