@@ -8,8 +8,9 @@ Dies ist die komplette Dokumentation der Schiffe-Versenken Anwendung.
 Im Spiel "Schiffe-Versenken" spielen zwei Spieler gegeneinander und versuchen jeweils die Schiffe des Gegners zu 
 zerstören.
 
-Zu Beginn wählen die Spieler jeweils aus, wo sie ihre Schiffe auf dem Feld platzieren wollen. Mithilfe von Methoden wird verhindert, dass der Spieler ein Schiff außerhalb des Spielfelds oder über ein anderes Schiff platziert. Danach wechseln sich die Spieler ab und wählen immer eine Koordinate aus mit dem Ziel, 
-die Schiffe des Gegners zu treffen und zu versenken. Der Spieler, der als Erstes alle Schiffe des Gegners zerstört, gewinnt das Spiel.
+Zu Beginn wählen die Spieler jeweils aus, wo sie ihre Schiffe auf dem Feld platzieren wollen. Natürlich kann man nicht 
+zwei Schiffe übereinander platzieren. Danach wechseln sich die Spieler ab und wählen immer eine Koordinate aus mit dem Ziel, 
+die Schiffe des Gegners zu treffen. Der Spieler, welcher als Erstes alle Schiffe des Gegners zerstört, gewinnt das Spiel.
 
 
 ## Starten des Spiels
@@ -27,14 +28,19 @@ Das Ganze würde dann so aussehen:
 
     python.exe main.py <player_name> <local_port> [<remote_ip> <remote_port>]
 
-Nun werden beide Spieler dazu aufgefordert, ihre verschiedenen Schiffe auf dem Spielfeld zu platzieren. Es gibt folgende Schiffarten:
+Nun werden beide Spieler dazu aufgefordert, ihre verschiedenen Schiffe auf dem Spielfeld zu platzieren. Es gibt folgende
+Schiffarten:
 
-- Titanic, 4 Felder lang, ein Schiff verfügbar
-- Cruiser, 3 Felder lang, zwei Schiffe verfügbar
-- Yacht, 2 Felder lang, drei Schiffe verfügbar
-- Boot, 1 Feld lang, vier Schiffe verfügbar
+`Titanic, 4 Felder lang, ein Schiff verfügbar`
 
-Nachdem alle zehn Schiffe platziert wurden, werden die Spieler miteinander verbunden und können anfangen, gegeneinander zu spielen.
+`Cruiser, 3 Felder lang, zwei Schiffe verfügbar`
+
+`Yacht, 2 Felder lang, drei Schiffe verfügbar`
+
+`Boot, 1 Feld lang, vier Schiffe verfügbar`
+
+Nachdem alle zehn Schiffe platziert wurden, werden die Spieler miteinander verbunden und können anfangen, gegeneinander
+zu spielen.
 
 
 ## Aufbau
@@ -68,16 +74,49 @@ In den Zeilen 118-129 kann man dann sehen, wie im Spiel mit Hilfe des Clients un
 angreifen. Mit `client.send(bomb)` wird die Koordinate des Angriffs vom Client an den Server geschickt.
 `result = server.receive()` empfängt den Angriff und `print(result)` informiert den Spieler, ob sein Angriff ein Schiff
 getroffen hat oder ob ein Schiff verfehlt wurde. `board_info = server.receive()` empfängt die Koordinaten des Angriffs
-auf dem Spielfeld und `print(board_info)` zeigt das Spielfield mit dem Feld an, das angegriffen wurde.
+auf dem Spielfeld und `print(board_info)` zeigt das Spielfield an mit dem Feld, das angegriffen wurde.
+
+Des Weiteren wurde in der `main.py` umgesetzt, dass einige Informationen zu Beginn des Spiels angezeigt werden. Wenn der
+erste Spieler sich verbindet, wird ihm angezeigt, was für Schiffsarten er platzieren kann und wie viele er jeweils
+platzieren kann:
+
+    if first_deployment:
+        print("Place your Ships. You have 4 different types of ships:"
+              "\n"
+              "\n- Titanic. 4 units long. 1 available."
+              "\n- Cruiser. 3 units long. 2 available."
+              "\n- Yacht. 2 units long. 3 available"
+              "\n- Boat. 1 unit long. 4 available. \n")
+
+Diese Nachricht wird mit Hilfe von `time.sleep(5)` und `system("Clear")` für fünf Sekunden angezeigt und danach gelöscht.
+Allerdings funktioniert der `Clear` Befehl nur bei MacOS und Linux. Bei Windows müsste man hierfür `cls` verwenden.
+
+Damit die Spieler entscheiden und eingeben können, wo sie ihre einzelnen Schiffe auf dem Spielfeld platzieren wollen,
+haben wir eine `place_ships` Methode (Zeile 68) implementiert. Hier wird der Spieler dazu aufgefordert eine Koordinate
+einzugeben und dann eine Richtung, in die die Länge des Schiffs erweitert werden soll. Nach der Richtung wird nur
+gefragt, wenn das Schiff länger als eine Einheit ist, da Schiffe mit der Länge 1 logischerweise nicht erweitert werden
+müssen (Zeile 77-80):
+
+    if health > 1:
+        direction = input("Type a direction. (N: North, E: East, S: South, W: West): ")
+    else:
+        direction = 'S'
+
+Die Schiffe werden dann jeweils für den ersten Spieler, mit Hilfe von Zeile 170-179, und für den zweiten Spieler, mit
+Hilfe von Zeile 214-223, platziert. Nachdem die Schiffe der beiden Spieler platziert werden, werden sie miteinander
+und können anfangen, das Spiel zu spielen.
+
+Während des Spiels werden Angriffe mit der `handle_outgoing_move()` Methode gesendet, welche dann mit der
+`handle_incoming_move` Methode verarbeitet und ausgewertet werden.
 
 ### Board.py
 
-`Board.py` enthält eine Spielfeld-Klasse, in der das Spielfeld initialisiert wird und in der die Methoden sind, welche
-alles durchführen, was mit dem Spielfeld zu tun hat.
+`Board.py` enthält eine Spielfeld-Klasse, in der das Spielfeld initialisiert wird und in der sich die Methoden befinden, 
+welche alles durchführen, was mit dem Spielfeld zu tun hat.
 
 In Zeile 25 befindet sich eine Methode namens `add_ship`, welche ein neues Schiff platziert und hierbei auch zum Beispiel
-überprüft, ob eine Koordinate, wo das Schiff platziert werden soll, schon von einem anderen Schiff besetzt ist oder ob 
-die Koordinaten sich überhaupt auf dem Spielfeld befinden.
+überprüft, ob die Koordinate, wo das Schiff platziert werden soll, schon von einem anderen Schiff besetzt ist oder ob 
+die Koordinate sich überhaupt auf dem Spielfeld befindet.
 
 Eine weitere wichtige Methode ist die `bomb` Methode, die in Zeile 47 beginnt. Diese ermöglicht, dass die von einem
 Spieler ausgewählte Koordinate angegriffen wird und überprüft, ob sich auf dieser Koordinate ein Schiff befindet oder
@@ -98,6 +137,16 @@ zerstört ist oder ob nur ein einziger Treffer gelandet wurde. Je nachdem welche
 Nachrichten `Destroyed, Game Over`, `Destroyed` oder `Hit` für die Spieler angezeigt. Eine letzte Nachricht `Already
 bombed` wird herausgegeben, wenn die Koordinate bereits zuvor angegriffen wurde.
 
+Um Informationen für das Spielfeld zu generieren und diese anzuzeigen, haben wir die `info` Methode implementiert. Hier
+wird zum Beispiel angegeben, was man auf dem Spielfeld sehen soll, falls ein Angriff ein Schiff trifft:
+
+        if self.board[r][c] == HIT:
+            row += 'X '
+
+Wenn ein Spieler also ein Schiff trifft, wird dies angezeigt, indem ein `X` auf die getroffene Koordinate gesetzt wird.
+Ein `o` taucht auf dem Spielfeld auf, wenn man ein Schiff verfehlt und noch nicht attackierte Koordinaten werden mit
+einem `-` dargestellt.
+
 ### Ship.py
 
 `Ship.py` ist mit Abstand die kleinste der drei Dateien und enthält lediglich eine Schiff-Klasse. Diese Klasse hat die
@@ -116,15 +165,32 @@ bestehen:
 Das Gleiche wurde für die Richtungen Süden, Westen und Osten implementiert.
 
 
+## Herausforderungen beim Coden
 
+Die erste Herausforderung war es erstmal, Python zu lernen. Dies haben wir zum Beispiel mit Hilfe von verschiedenen 
+Videos und Websiten gemacht. Weiter unten sind ein paar Links zu finden, mit denen wir uns die Grundlagen aneignen konnten.
 
+Grundsätzlich war es nicht das Schwerste, die Programmiersprache Python zu lernen. Die Grundlagen hatten wir relativ 
+schnell gelernt, da wir alle durch das Modul OOP schon mit den Grundprinzipien der Programmierung vertraut waren und 
+somit nur die Syntax lernen mussten, welche uns bei Python sogar viel einfacher fiel, als bei beispielsweise Java.
 
+Als wir dann anfingen, uns langsam an die Entwicklung des Spiels ranzutasten, wussten wir anfangs nicht wirklich, wo wir 
+anfangen sollten und hatten etwas Schwierigkeiten, unsere neu erlernten Python-Kenntnisse direkt im Schiffe-Versenken-Spiel
+umzusetzen. Nach kurzen Startschwierigkeiten stürzten wir uns einfach ins Geschehen und fingen an, erstmal ohne OOP und 
+Konzept eine 2D-List zu erstellen, und eine Funktion zu programmieren, die diese in einem passenden Format (1-10, A-J) 
+ausgibt. Als das erstmal getan war, ging es auch schneller voran, da man nun einen Anfang hatte und wusste wo man anbinden 
+kann. Schnell kamen dann Platzierungsmethoden für die Schiffe, Überlappungsüberprüfungen, und mehr dazu, sodass wir 
+relativ schnell schon mal ein Spiel hatten, welches man zwar noch nicht online spielen konnte, aber schon ein wenig 
+gegen den Computer spielen konnte.
 
-## Probleme beim Coden
-
-Die erste Herausforderung war es erstmal, Python zu lernen. Dies haben wir zum Beispiel mit Hilfe von verschiedenen Videos und Websiten gemacht. Weiter unten sind ein paar Links zu finden, mit denen wir uns die Grundlagen aneignen konnten. Grundsätzlich war es nicht das Schwerste, die Programmiersprache Python zu lernen. Die Grundlagen hatten wir relativ schnell gelernt, da wir alle durch das Modul OOP schon mit den Grundprinzipien der Programmierung vertraut waren und somit nur die Syntax lernen mussten, welche uns bei Python sogar viel einfacher fiel, als bei beispielsweise Java. Als wir dann anfingen, uns langsam an die Entwicklung des Spiels ranzutasten, wussten wir anfangs nicht wirklich, wo wir anfangen sollten und hatten etwas Schwierigkeiten, unsere neu erlernten Python-Kenntnisse direkt im Schiffe-Versenken-Spiel umzusetzen. Nach kurzen Startschwierigkeiten stürzten wir uns einfach ins Geschehen und fingen an, erstmal ohne OOP und Konzept eine 2D-List zu erstellen, und eine Funktion zu programmieren, die diese in einem passenden Format (1-10, A-J) ausgibt. Als das erstmal getan war, ging es auch schneller voran, da man nun einen Anfang hatte und wusste wo man anbinden kann. Schnell kamen dann Platzierungsmethoden für die Schiffe, Überlappungsüberprüfungen, und mehr dazu, sodass wir relativ schnell schon mal ein Spiel hatten, in welchem man zwar noch nicht online spielen konnte, aber schon ein wenig gegen den Computer spielen konnte. Nicht alles funkktionierte, aber das war nicht das Hauptproblem: Das Spiel war in katastrophaler Ordnung in Form von versschachtelten If-Abfragen und ohne wirkliche Objektorientierung gecodet worden und das störte uns ziemlich, da wir nicht so einen guten Überblick hatten und vieles im Code sehr repetitiv war. Also beschlossen wir, die Objektorientierung nochmal zu vertiefen und schauten uns wieder etliche Videos an und recherchierten auf Stackoverflow, während wir parallel versuchten, den Code zu optimieren.
+Nicht alles funktionierte, aber das war nicht das Hauptproblem: Das Spiel war in katastrophaler Ordnung in Form von 
+verschachtelten If-Abfragen und ohne wirkliche Objektorientierung gecodet worden und das störte uns ziemlich, da wir 
+nicht so einen guten Überblick hatten und vieles im Code sehr repetitiv war. Also beschlossen wir, die Objektorientierung
+nochmal zu vertiefen und schauten uns wieder etliche Videos an und recherchierten auf Stackoverflow, während wir parallel 
+versuchten, den Code zu optimieren.
 
 https://www.youtube.com/watch?v=JeznW_7DlB0&t=1044s
 https://www.youtube.com/watch?v=HGOBQPFzWKo&t=38s
 https://www.youtube.com/watch?v=rfscVS0vtbw&t=14234s
+https://www.w3schools.com/python/default.asp
 
