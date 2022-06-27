@@ -1,7 +1,5 @@
 import socket
 import sys
-import time
-from os import system
 
 from board import Board
 from ship import Ship
@@ -71,7 +69,6 @@ def place_ships(board, health, name, number):
                   'N': 0, 'E': 1, 'S': 2, 'W': 3}
     letter_to_num = {'A': 1, 'B': 2, 'C': 3, 'D': 4, 'E': 5, 'F': 6, 'G': 7, 'H': 8, 'I': 9, 'J': 10,
                      'a': 1, 'b': 2, 'c': 3, 'd': 4, 'e': 5, 'f': 6, 'g': 7, 'h': 8, 'i': 9, 'j': 10}
-    system("Clear")
     position = input("Please type a coordinate for your " + name + " " + str(number) + ", for example A4: ")
     # Falls es sich um ein 1-Feld-Schiff handelt, ist die Richtung egal
     if health > 1:
@@ -87,7 +84,6 @@ def place_ships(board, health, name, number):
         exit(1)
 
     board.display_all()
-    time.sleep(2)
 
 
 # Methode, um mit eingehenden Angriffen umzugehen
@@ -164,8 +160,6 @@ if __name__ == '__main__':
               "\n- Yacht. 2 units long. 3 available"
               "\n- Boat. 1 unit long. 4 available. \n")
 
-        time.sleep(5)
-        system("Clear")
         # Platziert die verschiedenen Schiffe mithilfe einer Abfrage vom User
         place_ships(board, 4, "Titanic", 1)
         place_ships(board, 3, "Cruiser", 1)
@@ -208,8 +202,6 @@ if __name__ == '__main__':
               "\n- Yacht. 2 units long. 3 available"
               "\n- Boat. 1 unit long. 4 available. \n")
 
-        time.sleep(5)
-        system("Clear")
         # "Spieler 2" Konfiguration Schiffe
         place_ships(board, 4, "Titanic", 1)
         place_ships(board, 3, "Cruiser", 1)
