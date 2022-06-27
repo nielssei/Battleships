@@ -190,7 +190,10 @@ nochmal zu vertiefen und schauten uns wieder etliche Videos an und recherchierte
 versuchten, den Code zu optimieren.
 
 https://www.youtube.com/watch?v=JeznW_7DlB0&t=1044s
+
 https://www.youtube.com/watch?v=HGOBQPFzWKo&t=38s
+
 https://www.youtube.com/watch?v=rfscVS0vtbw&t=14234s
+
 https://www.w3schools.com/python/default.asp
 
