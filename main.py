@@ -72,10 +72,28 @@ def place_ships(board, health, name, number):
     letter_to_num = {'A': 1, 'B': 2, 'C': 3, 'D': 4, 'E': 5, 'F': 6, 'G': 7, 'H': 8, 'I': 9, 'J': 10,
                      'a': 1, 'b': 2, 'c': 3, 'd': 4, 'e': 5, 'f': 6, 'g': 7, 'h': 8, 'i': 9, 'j': 10}
     system("Clear")
-    position = input("Please type a coordinate for your " + name + " " + str(number) + ", for example A4: ")
+    passed = False
+    while not passed:
+        position = input("Please type a coordinate for your " + name + " " + str(number) + ", for example A4: ")
+        if len(position) == 2:
+            if (position[0] in letter_to_num.keys()) and (int(position[1]) in letter_to_num.values()):
+                passed = True
+            else:
+                print("Invalid coordinate")
+        else:
+            print("Invalid coordinate")
     # Falls es sich um ein 1-Feld-Schiff handelt, ist die Richtung egal
     if health > 1:
-        direction = input("Type a direction. (N: North, E: East, S: South, W: West): ")
+        passed = False
+        while not passed:
+            direction = input("Type a direction. (N: North, E: East, S: South, W: West): ")
+            if len(direction) == 1:
+                if (direction[0] in dir_to_num.keys()):
+                    passed = True
+                else:
+                    print("Invalid direction")
+            else:
+                print("Invalid direction")
     else:
         direction = 'S'
     # Koordinaten werden hinzugefügt und Schiff wird platziert, wenn alle Bedingungen aus add_ship zutreffen
@@ -87,7 +105,6 @@ def place_ships(board, health, name, number):
         exit(1)
 
     board.display_all()
-    time.sleep(2)
 
 
 # Methode, um mit eingehenden Angriffen umzugehen
@@ -105,7 +122,7 @@ def handle_incoming_move():
 
     # Falls "Game Over" ist, wird eine Nachricht ausgegeben und das Spiel beendet
     if board.game_over():
-        print("Game over, you lose :-(")
+        print("Game Over, you lose :-(")
         sys.exit()
 
 
@@ -114,14 +131,22 @@ def handle_outgoing_move():
     letter_to_num = {'A': '1', 'B': '2', 'C': '3', 'D': '4', 'E': '5', 'F': '6', 'G': '7', 'H': '8', 'I': '9', 'J': '10',
                      'a': '1', 'b': '2', 'c': '3', 'd': '4', 'e': '5', 'f': '6', 'g': '7', 'h': '8', 'i': '9', 'j': '10'}
     # Anzugreifende Koordinate wird eingegeben
-    bomb_ = input("Send bomb (e.G. A4): ")
+    passed = False
+    while not passed:
+        bomb_ = input("Send bomb (e.G. A4): ")
+        if len(bomb) == 2:
+            if (bomb[0] in letter_to_num.keys()) and (int(bomb[1]) in letter_to_num.values()):
+                passed = True
+            else:
+                print("Invalid coordinate")
+        else:
+            print("Invalid coordinate")
     # Es wird überprüft, ob sie auf dem Spielfeld ist, wenn ja, wird sie formatiert und gesendet
     if 0 <= int(letter_to_num[bomb_[0]]) < 10 and 0 <= int(bomb_[1]) < 10:
         bomb = (letter_to_num[bomb_[0]] + "," + bomb_[1])
         client.send(bomb)
     else:
         print("Invalid Coordinate (OUT OF MAP)")
-
     # Angriffskoordinaten des Gegners erhalten und Ergebnis ausgeben
     result = server.receive()
     print(result)
@@ -164,7 +189,6 @@ if __name__ == '__main__':
               "\n- Yacht. 2 units long. 3 available"
               "\n- Boat. 1 unit long. 4 available. \n")
 
-        time.sleep(5)
         system("Clear")
         # Platziert die verschiedenen Schiffe mithilfe einer Abfrage vom User
         place_ships(board, 4, "Titanic", 1)
@@ -241,5 +265,4 @@ if __name__ == '__main__':
         while True:
             handle_outgoing_move()
             handle_incoming_move()
-
 
