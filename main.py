@@ -51,6 +51,9 @@ class Client:
 
         self.socket.sendall(message.encode())
 
+        # Erhalte Bestätigung vom Server, wird im Moment nicht benutzt
+        data = self.socket.recv(500)
+
         self.socket.close()
 
     # Schickt Anfrage zur Verbindung
@@ -112,7 +115,7 @@ def handle_outgoing_move():
     # Anzugreifende Koordinate wird eingegeben
     bomb_ = input("Send bomb (e.G. A4): ")
     # Es wird überprüft, ob sie auf dem Spielfeld ist, wenn ja, wird sie formatiert und gesendet
-    if 0 <= int(letter_to_num[bomb_[0]]) < 10 and 0 <= int(bomb_[1]) < 10:
+    if 0 < int(letter_to_num[bomb_[0]]) <= 10 and 0 < int(bomb_[1]) <= 10:
         bomb = (letter_to_num[bomb_[0]] + "," + bomb_[1])
         client.send(bomb)
     else:
