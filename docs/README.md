@@ -125,8 +125,8 @@ In der `handle_incoming_move()` Methode wird diese Koordinate vom Server empfang
     bomb_coordinates = bomb.split(",")
     result = board.bomb(int(bomb_coordinates[0]) - 1, int(bomb_coordinates[1]) - 1)
 
-Anschließend wird die Antwort mit dem entsprechenden Ergebnis vom Client zurück an den Server geschickt (Zeile 103-104;
-Zeile 126-129):
+Anschließend wird die Antwort mit dem entsprechenden Ergebnis vom Client zurück an den Server geschickt, vom Server des 
+anderen Spielers empfangen und das Ergebnis für alle angezeigt (Zeile 103-104; Zeile 126-129):
 
     client.send(result)
     client.send(board.info())
