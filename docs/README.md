@@ -88,9 +88,6 @@ platzieren kann:
               "\n- Yacht. 2 units long. 3 available"
               "\n- Boat. 1 unit long. 4 available. \n")
 
-Diese Nachricht wird mit Hilfe von `time.sleep(5)` und `system("Clear")` für fünf Sekunden angezeigt und danach gelöscht.
-Allerdings funktioniert der `Clear` Befehl nur bei MacOS und Linux. Bei Windows müsste man hierfür `cls` verwenden.
-
 Damit die Spieler entscheiden und eingeben können, wo sie ihre einzelnen Schiffe auf dem Spielfeld platzieren wollen,
 haben wir eine `place_ships` Methode (Zeile 68) implementiert. Hier wird der Spieler dazu aufgefordert eine Koordinate
 einzugeben und dann eine Richtung, in die die Länge des Schiffs erweitert werden soll. Nach der Richtung wird nur
