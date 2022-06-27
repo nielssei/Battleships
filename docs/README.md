@@ -107,7 +107,45 @@ Hilfe von Zeile 214-223, platziert. Nachdem die Schiffe der beiden Spieler platz
 und können anfangen, das Spiel zu spielen.
 
 Während des Spiels werden Angriffe mit der `handle_outgoing_move()` Methode gesendet, welche dann mit der
-`handle_incoming_move` Methode verarbeitet und ausgewertet werden.
+`handle_incoming_move` Methode verarbeitet und ausgewertet werden. Somit ist in der `handle_outgoing_move()` Methode 
+zum Beispiel der Input implementiert worden, mit dem die Spieler die Koordinaten ihres Angriffs eingeben können(Zeile 117):
+
+    bomb_ = input("Send bomb (e.G. A4): ")
+
+Wenn sich die eingegebene Koordinate auf dem Spielfeld befindet, wird diese vom Client an den Server geschickt
+(Zeile 119-121):
+
+    if 0 <= int(letter_to_num[bomb_[0]]) < 10 and 0 <= int(bomb_[1]) < 10:
+        bomb = (letter_to_num[bomb_[0]] + "," + bomb_[1])
+        client.send(bomb)
+
+In der `handle_incoming_move` Methode wird diese Koordinate vom Server empfangen und ausgewertet (Zeile 98-100):
+
+    bomb = server.receive()
+    bomb_coordinates = bomb.split(",")
+    result = board.bomb(int(bomb_coordinates[0]) - 1, int(bomb_coordinates[1]) - 1)
+
+Anschließend wird die Antwort mit dem entsprechenden Ergebnis vom Client zurück an den Server geschickt (Zeile 103-104;
+Zeile 126-129):
+
+    client.send(result)
+    client.send(board.info())
+
+    result = server.receive()
+    print(result)
+    board_info = server.receive()
+    print(board_info)
+
+Zum Schluss befinden sich in den Methoden die Nachrichten, die die Spieler jeweils am Ende des Spiels informieren, ob
+sie gewonnen oder verloren haben (Zeile 107-109; Zeile 132-134):
+
+    if board.game_over():
+        print("Game over, you lose :-(")
+        sys.exit()
+
+    if "Over" in result:
+        print("Game over, you win!")
+        sys.exit()
 
 ### Board.py
 
