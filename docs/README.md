@@ -246,6 +246,8 @@ https://www.youtube.com/watch?v=C7CpfL1p6y0&t=380s
 
 https://www.youtube.com/watch?v=uagKTbohimU
 
+https://docs.python.org/3/library/socket.html
+
 https://docs.python.org/3/howto/sockets.html
 
 https://pythonprogramming.net/server-chatroom-sockets-tutorial-python-3/
