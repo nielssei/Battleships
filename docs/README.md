@@ -227,6 +227,13 @@ nicht so einen guten Überblick hatten und vieles im Code sehr repetitiv war. Al
 nochmal zu vertiefen und schauten uns wieder etliche Videos an und recherchierten auf Stackoverflow, während wir parallel 
 versuchten, den Code zu optimieren.
 
+Eine der größten Herausforderungen für uns war es, die Interprozesskommunikation mit Hilfe von Sockets in unsere Anwendung
+zu implementieren, damit überhaupt zwei Spieler gegeneinander spielen können. In den Vorlesungsfolien für "Betriebssysteme
+und Rechnernetze" befindet sich ein Beispiel für Sockets via TCP, welches allerdings in C geschrieben wurde. Trotzdem konnte
+dieses Beispiel uns ein wenig weiterhelfen. Um nun herauszufinden, wie wir die Sockets in unsere Python-Anwendung einbauen
+können, haben wir wieder im Internet recherchiert. Hier haben wir ein paar Beispiele gefunden, wodurch uns das Ganze
+verständlicher wurde.
+
 https://www.youtube.com/watch?v=JeznW_7DlB0&t=1044s
 
 https://www.youtube.com/watch?v=HGOBQPFzWKo&t=38s
@@ -239,5 +246,5 @@ https://www.youtube.com/watch?v=C7CpfL1p6y0&t=380s
 
 https://www.youtube.com/watch?v=uagKTbohimU
 
-
+https://docs.python.org/3/howto/sockets.html
 
